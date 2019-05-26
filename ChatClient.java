@@ -1,3 +1,5 @@
+// https://github.com/yeochung/SimpleChat
+
 import java.net.*;
 import java.io.*;
 
@@ -23,12 +25,26 @@ public class ChatClient {
 			InputThread it = new InputThread(sock, br);
 			it.start();
 			String line = null;
-			while((line = keyboard.readLine()) != null){
-				pw.println(line);
-				pw.flush();
-				if(line.equals("/quit")){
-					endflag = true;
-					break;
+			
+			//Forbidden words
+			String[] list = {"hi", "hello", "no", "nope", "nada"};
+			
+			while((line = keyboard.readLine()) != null){ // read line
+				boolean flag = true;
+				for (String word : list) { // check the words in the list
+					if(line.equals(word)) { // compare the line with each word. TRUE if it exists, FALSE if it doesn't
+						System.out.println("No forbidden words allowed."); // Print warning sign if TRUE
+						flag = false;
+						break;
+					}
+				}
+				if (flag == true) { // if no forbidden word, continue with printing the line
+					pw.println(line);
+					pw.flush();
+					if(line.equals("/quit")){
+						endflag = true;
+						break;
+					}
 				}
 			}
 			System.out.println("Connection closed.");
